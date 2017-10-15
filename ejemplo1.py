@@ -70,6 +70,7 @@ def crossover(population):
 
     return population
 
+
 def mutation(population):
     new_population = list()
     for element in population:
