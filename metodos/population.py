@@ -27,6 +27,7 @@ class Population:
         self.genotypes[position] = genotype
 
     def get_total_population(self):
+        self.population_fitness = 0
         for i in range(self.size):
             self.population_fitness += self.genotypes[i].get_fitness()
         return self.population_fitness

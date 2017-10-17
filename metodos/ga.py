@@ -3,16 +3,23 @@
 from population import Population
 from genotype import Genotype
 import random
+import pdb
+import copy
 
 
 class GeneticAlgorithm:
-    def __init__(self):
+    def __init__(self, elitism):
         self.p_crossover = 0.7
-        self.p_mutation = 1/10
+        self.p_mutation = 1/20
+        self.elitism = elitism
 
     def get_next_generation(self, population):
         new_population = Population(population.size, False)
 
+        offset = 0
+        if self.elitism:
+            offset = 1
+            new_population.add_genotype(population.get_fitesst())
         # crossover
         temp_genotypes = self.roulette_selection(population)
         for i in range(population.size):
@@ -20,16 +27,23 @@ class GeneticAlgorithm:
                 aux = self.crossover(temp_genotypes[i], temp_genotypes[0])
             else:
                 aux = self.crossover(temp_genotypes[i], temp_genotypes[i+1])
+            aux.get_fitness()
             population.genotypes[i] = aux
         # mutation
-        for element in population.genotypes:
-            self.mutate(element)
-            new_population.add_genotype(element)
+        i = offset
+
+        while (i < population.size):
+            # pdb.set_trace()
+            aux = copy.deepcopy(population.genotypes[i])
+            self.mutate(aux)
+            aux.get_fitness()
+            new_population.add_genotype(aux)
+            i += 1
 
         return new_population
 
     def mutate(self, genotype):
-        """crossoever over all genes"""
+        """mutate over all genes"""
         for i in range(genotype.length):
             if random.random() <= self.p_mutation:
                 if (genotype.genes[i] == '0'):
@@ -38,6 +52,7 @@ class GeneticAlgorithm:
                     genotype.set_gen(i, '0')
 
     def crossover(self, genotype1, genotype2):
+        """Crossover over all genes"""
         new_genotype = Genotype()
 
         if random.random() <= self.p_crossover:
@@ -56,9 +71,8 @@ class GeneticAlgorithm:
 
         for genotype in population.genotypes:
             proba = round(genotype.fitness / sum_fit, 2)
-            sum_proba = sum_proba + proba
+            sum_proba += proba
             proba_table.append(sum_proba)
-
         i = 0
         while i < population.size:
             number = random.random()

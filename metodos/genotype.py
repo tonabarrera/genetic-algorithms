@@ -14,11 +14,13 @@ class Genotype(object):
         return str(self)
 
     def __str__(self):
-        return self.genes
+        return str(self.fitness)
+        # return self.genes
 
     def generate_genotype(self):
         formato = '0' + str(self.length) + 'b'
         self.genes = format(random.getrandbits(self.length), formato)
+        self.get_fitness()
 
     def set_gen(self, i, value):
         self.genes = self.genes[:i] + value + self.genes[i+1:]

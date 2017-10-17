@@ -7,4 +7,3 @@ class CalcFitness:
     def __init__(self, arg):
         super(CalcFitness, self).__init__()
         self.arg = arg
-  

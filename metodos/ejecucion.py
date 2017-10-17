@@ -5,9 +5,11 @@ from population import Population
 
 
 population = Population(5, True)
-algorithm = GeneticAlgorithm()
+algorithm = GeneticAlgorithm(True)
+print(population.genotypes)
 
-for i in range(20):
-    print('Generation: ' + str(i) + ' Fitness: ' + str(population.get_total_population()))
-    print(population)
+for i in range(100):
+    print('Generation: '+str(i) + ' ' + str(population.get_total_population()))
     population = algorithm.get_next_generation(population)
+
+print(population.genotypes)
