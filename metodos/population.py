@@ -4,10 +4,11 @@ from genotype import Genotype
 
 
 class Population:
-    def __init__(self, size, init):
+    def __init__(self, size, init, calcfitness):
         self.genotypes = list()
         self.size = size
         self.population_fitness = 0
+        self.calcfitness = calcfitness
         if init:
             self.create_population()
 
@@ -16,7 +17,7 @@ class Population:
 
     def create_population(self):
         for i in range(self.size):
-            genotype = Genotype()
+            genotype = Genotype(self.calcfitness)
             genotype.generate_genotype()
             self.genotypes.append(genotype)
 
