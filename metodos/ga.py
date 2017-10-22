@@ -10,11 +10,14 @@ import copy
 class GeneticAlgorithm:
     def __init__(self, elitism):
         self.p_crossover = 0.7
-        self.p_mutation = 1/20
+        self.p_mutation = 1/50
         self.elitism = elitism
+        self.calc = None
 
     def get_next_generation(self, population):
-        new_population = Population(population.size, False)
+        self.calc = population.calc
+        self.p_mutation = round(1/(self.calc.long*2), 2)
+        new_population = Population(population.size, False, self.calc)
 
         offset = 0
         if self.elitism:
@@ -42,18 +45,23 @@ class GeneticAlgorithm:
 
         return new_population
 
+    # Validar que cumpla las condiciones
     def mutate(self, genotype):
         """mutate over all genes"""
         for i in range(genotype.length):
             if random.random() <= self.p_mutation:
-                if (genotype.genes[i] == '0'):
+                if genotype.genes[i] == '0':
                     genotype.set_gen(i, '1')
                 else:
                     genotype.set_gen(i, '0')
+        if not self.calc.validate_genes(genotype.genes):
+            print('Nuevo genotipo')
+            genotype.generate_genotype()
 
+    # Validar que cumpla las condiciones
     def crossover(self, genotype1, genotype2):
         """Crossover over all genes"""
-        new_genotype = Genotype()
+        new_genotype = Genotype(self.calc)
 
         if random.random() <= self.p_crossover:
             n = random.randrange(0, genotype1.length)

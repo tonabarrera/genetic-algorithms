@@ -6,7 +6,7 @@ import random
 class Genotype:
     """docstring for Genotype"""
     def __init__(self, calcfitness):
-        self.length = 10
+        self.length = calcfitness.long
         self.genes = ''
         self.fitness = 0
         self.calcfitness = calcfitness
@@ -24,7 +24,7 @@ class Genotype:
         i = 0
         while i < len(self.calcfitness.z):
             formato = '0' + str(self.calcfitness.mj[i]) + 'b'
-            substring = format(random.getrandbits(self.length), formato)
+            substring = format(random.getrandbits(self.calcfitness.mj[i]), formato)
             if self.calcfitness.validate_limit(substring, i):
                 i += 1
                 self.genes += substring
@@ -36,8 +36,12 @@ class Genotype:
 
     def set_genes(self, string):
         """Modificamos la cadena"""
-        if (len(string) <= self.length):
-            self.genes = string
+        if len(string) <= self.length:
+            if self.calcfitness.validate_genes(string):
+                self.genes = string
+                self.get_fitness()
+            else:
+                self.generate_genotype()
         else:
             raise Exception
 
