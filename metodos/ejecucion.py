@@ -1,26 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from calcfitness import CalcFitness
+from calcularfitness import CalcFitness
 from ga import GeneticAlgorithm
-from population import Population
+from poblacion import Poblacion
 
 
 def iniciar():
-    calculate = CalcFitness()
-    calculate.precision = 10
+    calcular = CalcFitness()
+    calcular.precision = 10
 
-    calculate.z = [1, 1]
-    calculate.bj = [3, 5]
-    calculate.aj = [0, 0]
-    calculate.get_mj()
-    population = Population(10, True, calculate)
+    calcular.z = [1, 1]
+    calcular.bj = [3, 5]
+    calcular.aj = [0, 0]
+    calcular.get_mj()
+    print(calcular.longitud)
+    poblacion = Poblacion(10, True, calcular)
     algorithm = GeneticAlgorithm(True)
-    print(population.genotypes)
+    print(poblacion)
+
     for i in range(100):
-         population = algorithm.get_next_generation(population)
+        poblacion = algorithm.get_next_generation(poblacion)
 
-    print(population.genotypes)
-
+    print(poblacion)
 
 
 iniciar()

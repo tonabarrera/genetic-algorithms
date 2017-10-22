@@ -1,95 +1,101 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from population import Population
-from genotype import Genotype
-import random
-import pdb
 import copy
+import random
+
+from calcularfitness import CalcFitness
+from genotipo import Genotipo
+from poblacion import Poblacion
 
 
 class GeneticAlgorithm:
-    def __init__(self, elitism):
-        self.p_crossover = 0.7
-        self.p_mutation = 1/50
-        self.elitism = elitism
+    def __init__(self, elitismo):
+        self.p_cruce = 0.7
+        self.p_mutacion = 0
+        self.elitismo = elitismo
         self.calc = None
 
-    def get_next_generation(self, population):
-        self.calc = population.calc
-        self.p_mutation = round(1/(self.calc.long*2), 2)
-        new_population = Population(population.size, False, self.calc)
+    def get_next_generation(self, poblacion):
+        """Obtiene una nueva poblacion con base a mutaciones y cruces"""
+        self.calc = poblacion.calc
+        if self.p_mutacion == 0:
+            self.p_mutacion = round(1 / (self.calc.longitud), 2)
+        nueva_poblacion = Poblacion(poblacion.tam_poblacion, False, self.calc)
 
         offset = 0
-        if self.elitism:
+        if self.elitismo:
             offset = 1
-            new_population.add_genotype(population.get_fitesst())
+            nueva_poblacion.agregar_genotipo(poblacion.get_fittest())
         # crossover
-        temp_genotypes = self.roulette_selection(population)
-        for i in range(population.size):
-            if i == (population.size - 1):
-                aux = self.crossover(temp_genotypes[i], temp_genotypes[0])
+        temp_genotypes = self.roulette_selection(poblacion)
+        for i in range(poblacion.tam_poblacion):
+            if i == (poblacion.tam_poblacion - 1):
+                aux = self.cruzar(temp_genotypes[i], temp_genotypes[0])
             else:
-                aux = self.crossover(temp_genotypes[i], temp_genotypes[i+1])
+                aux = self.cruzar(temp_genotypes[i], temp_genotypes[i + 1])
             aux.get_fitness()
-            population.genotypes[i] = aux
+            poblacion.genotipos[i] = aux
         # mutation
         i = offset
 
-        while (i < population.size):
+        while i < poblacion.tam_poblacion:
             # pdb.set_trace()
-            aux = copy.deepcopy(population.genotypes[i])
-            self.mutate(aux)
+            aux = copy.deepcopy(poblacion.genotipos[i])
+            self.mutar(aux)
             aux.get_fitness()
-            new_population.add_genotype(aux)
+            nueva_poblacion.agregar_genotipo(aux)
             i += 1
 
-        return new_population
+        return nueva_poblacion
 
     # Validar que cumpla las condiciones
-    def mutate(self, genotype):
+    def mutar(self, genotype):
         """mutate over all genes"""
-        for i in range(genotype.length):
-            if random.random() <= self.p_mutation:
+        for i in range(genotype.longitud):
+            p = random.random()
+            if p <= self.p_mutacion:
                 if genotype.genes[i] == '0':
                     genotype.set_gen(i, '1')
                 else:
                     genotype.set_gen(i, '0')
-        if not self.calc.validate_genes(genotype.genes):
+        if not self.calc.validar_cadena(genotype.genes):
             print('Nuevo genotipo')
-            genotype.generate_genotype()
+            genotype.generar_genotipo()
 
     # Validar que cumpla las condiciones
-    def crossover(self, genotype1, genotype2):
+    def cruzar(self, genotype1, genotype2):
         """Crossover over all genes"""
-        new_genotype = Genotype(self.calc)
+        new_genotype = Genotipo(self.calc)
 
-        if random.random() <= self.p_crossover:
-            n = random.randrange(0, genotype1.length)
+        if random.random() <= self.p_cruce:
+            n = random.randrange(0, genotype1.longitud)
             uno = genotype1.genes[:n] + genotype2.genes[n:]
             new_genotype.set_genes(uno)
             return new_genotype
         else:
             return genotype1
 
-    def roulette_selection(self, population):
-        sum_fit = population.get_total_population()
+    @staticmethod
+    def roulette_selection(population):
+        """Algoritmo de seleccion de la siguiete poblacion"""
+        sum_fit = population.get_fitness_total()
         sum_proba = 0
         proba_table = list()
         nueva_poblacion = list()
 
-        for genotype in population.genotypes:
+        for genotype in population.genotipos:
             proba = round(genotype.fitness / sum_fit, 2)
             sum_proba += proba
             proba_table.append(sum_proba)
         i = 0
-        while i < population.size:
+        while i < population.tam_poblacion:
             number = random.random()
             for j in range(len(proba_table)):
                 if number <= proba_table[j]:
-                    nueva_poblacion.append(population.genotypes[j])
+                    nueva_poblacion.append(population.genotipos[j])
                     i += 1
 
-                if not (i < population.size):
+                if not (i < population.tam_poblacion):
                     break
 
         return nueva_poblacion
