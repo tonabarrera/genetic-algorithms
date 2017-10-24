@@ -4,21 +4,42 @@ import math
 
 
 class CalcFitness:
-
-    SIGNOS = {'IGUAL': 0, 'MENOR': 1, 'MAYOR': 2, 'MENOR_IGUAL':3, 'MAYOR_IGUAL':4}
+    SIGNOS = {'IGUAL': 0,
+              'MENOR': 1,
+              'MAYOR': 2,
+              'MENOR_IGUAL': 3,
+              'MAYOR_IGUAL': 4
+              }
 
     def __init__(self):
         self.z = list()  # Coeficientos de la funcion objetivo
         self.mj = list()  # Longitud de las subcadenas
         self.longitud = 0  # Longitud total de la cadena
-        self.aj = list()  # Limite inferior
-        self.bj = list()  # Limite superior
+        self.aj = [0, 0, 0, 0]  # Limite inferior
+        self.bj = [0, 0, 0, 0]  # Limite superior
         self.precision = 0  # Precision
         self.productos = list()  # Lista que guardara los valores de (bj-aj)/(2**mj-1)
         self.etiquetas = ['A', 'B', 'C', 'D']
-        self.restriciones = [{'valores': [.1, .6, 0, 0, 2000], 'signo': 3},
-                             {'valores': [1, 1, 0, 0, 6000], 'signo': 3},
-                             {'valores': [1, 0, 0, 0, 4000], 'signo': 3}]  # Lista de restricciones
+        self.restriciones = [{'variables': [.1, .6, 0, 0], 'limite':2000, 'signo': 3},
+                             {'variables': [1, 1, 0, 0], 'limite':6000, 'signo': 3},
+                             {'variables': [1, 0, 0, 0], 'limite':4000, 'signo': 3},
+                             {'variables': [1, 1, 0, 0], 'limite': 1000, 'signo': 4}]  # Lista de restricciones
+
+    def get_limites(self):
+        for i in range(len(self.z)):
+            aux = 0
+            for r in self.restriciones:
+                if r['variables'][i] != 0:
+                    if r['signo'] == CalcFitness.SIGNOS['MAYOR'] or r['signo'] == CalcFitness.SIGNOS['MAYOR_IGUAL']:
+                        aux = -r['limite'] / r['variables'][i]
+                    else:
+                        aux = r['limite'] / r['variables'][i]
+
+                if self.bj[i] < aux:
+                    self.bj[i] = aux
+
+                if aux < self.aj[i]:
+                    self.aj[i] = aux
 
 
     def get_mj(self):
@@ -68,26 +89,26 @@ class CalcFitness:
         while i < len(self.z):
             sub = string[anterior:self.mj[i] + anterior]
             anterior += self.mj[i]
-            coeficientes[i] =self.obtener_coeficiente(i, sub)
+            coeficientes[i] = self.obtener_coeficiente(i, sub)
             i += 1
-        #print('EVALUACION')
-        #print(coeficientes)
+        # print('EVALUACION')
+        # print(coeficientes)
         for r in self.restriciones:
-            evaluacion = (r['valores'][0] * coeficientes[0]) + (r['valores'][1] * coeficientes[1])
-            evaluacion += (r['valores'][2] * coeficientes[2]) + (r['valores'][3] * coeficientes[3])
+            evaluacion = (r['variables'][0] * coeficientes[0]) + (r['variables'][1] * coeficientes[1])
+            evaluacion += (r['variables'][2] * coeficientes[2]) + (r['variables'][3] * coeficientes[3])
             if r['signo'] == CalcFitness.SIGNOS['IGUAL']:
-                if not evaluacion == r['valores'][4]:
+                if not evaluacion == r['limite']:
                     return False
             elif r['signo'] == CalcFitness.SIGNOS['MAYOR']:
-                if not evaluacion > r['valores'][4]:
+                if not evaluacion > r['limite']:
                     return False
             elif r['signo'] == CalcFitness.SIGNOS['MENOR']:
-                if not evaluacion < r['valores'][4]:
+                if not evaluacion < r['limite']:
                     return False
             elif r['signo'] == CalcFitness.SIGNOS['MENOR_IGUAL']:
-                if not evaluacion <= r['valores'][4]:
+                if not evaluacion <= r['limite']:
                     return False
             else:
-                if not evaluacion >= r['valores'][4]:
+                if not evaluacion >= r['limite']:
                     return False
         return True
