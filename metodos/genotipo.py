@@ -21,13 +21,14 @@ class Genotipo:
     def generar_genotipo(self):
         """Generamos cada parte del genotipo, validamos que cumpla las restricciones
         y lo concatenamos con el resto del genotipo"""
-        i = 0
-        while i < len(self.calc.z):
-            formato = '0' + str(self.calc.mj[i]) + 'b'
-            substring = format(random.getrandbits(self.calc.mj[i]), formato)
-            if self.calc.validar_gen(substring, i):
-                i += 1
-                self.genes += substring
+        # En lugar de validar uno por uno, generar toda y despues validar toda la cadena
+        formato = '0' + str(self.calc.longitud) + 'b'
+        substring = format(random.getrandbits(self.calc.longitud), formato)
+
+        while not self.calc.validar_cadena(substring):
+            substring = format(random.getrandbits(self.calc.longitud), formato)
+
+        self.genes = substring
         self.get_fitness()
 
     def set_gen(self, i, value):
@@ -36,6 +37,7 @@ class Genotipo:
 
     def set_genes(self, string):
         """Modificamos la cadena"""
+        # Lo mismo que en generar genotipo
         if len(string) <= self.longitud:
             if self.calc.validar_cadena(string):
                 self.genes = string
