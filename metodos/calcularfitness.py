@@ -20,10 +20,11 @@ class CalcFitness:
         self.precision = 0  # Precision
         self.productos = list()  # Lista que guardara los valores de (bj-aj)/(2**mj-1)
         self.etiquetas = ['A', 'B', 'C', 'D']
-        self.restriciones = [{'variables': [.1, .6, 0, 0], 'limite':2000, 'signo': 3},
-                             {'variables': [1, 1, 0, 0], 'limite':6000, 'signo': 3},
-                             {'variables': [1, 0, 0, 0], 'limite':4000, 'signo': 3},
-                             {'variables': [1, 1, 0, 0], 'limite': 1000, 'signo': 4}]  # Lista de restricciones
+        # Restricciones
+        self.restriciones = [{'variables': [1, 1, 0, 0], 'limite':500, 'signo': 3},
+                             {'variables': [1, 0, 0, 0], 'limite':300, 'signo': 3},
+                             {'variables': [0, 1, 0, 0], 'limite':100, 'signo': 4},
+                             {'variables': [-1, 1, 0, 0], 'limite': 0, 'signo': 3}]  # Lista de restricciones
 
     def get_limites(self):
         for i in range(len(self.z)):

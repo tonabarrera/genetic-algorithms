@@ -59,7 +59,6 @@ class GeneticAlgorithm:
                 else:
                     genotype.set_gen(i, '0')
         if not self.calc.validar_cadena(genotype.genes):
-            print('Nuevo genotipo')
             genotype.generar_genotipo()
 
     # Validar que cumpla las condiciones
