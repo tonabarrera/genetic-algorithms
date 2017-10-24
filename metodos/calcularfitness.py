@@ -16,8 +16,9 @@ class CalcFitness:
         self.precision = 0  # Precision
         self.productos = list()  # Lista que guardara los valores de (bj-aj)/(2**mj-1)
         self.etiquetas = ['A', 'B', 'C', 'D']
-        self.restriciones = [{'valores': [1, 0, 0, 0, 3], 'signo': 3},
-                             {'valores': [0, 1, 0, 0, 5], 'signo': 3}]  # Lista de restricciones
+        self.restriciones = [{'valores': [.1, .6, 0, 0, 2000], 'signo': 3},
+                             {'valores': [1, 1, 0, 0, 6000], 'signo': 3},
+                             {'valores': [1, 0, 0, 0, 4000], 'signo': 3}]  # Lista de restricciones
 
 
     def get_mj(self):
@@ -61,14 +62,16 @@ class CalcFitness:
         return int(substring, 2)
 
     def validar_cadena(self, string):
-        coeficientes = [0] * len(self.z)
+        coeficientes = [0] * 4
         i = 0
         anterior = 0
         while i < len(self.z):
             sub = string[anterior:self.mj[i] + anterior]
             anterior += self.mj[i]
-            coeficientes.append(self.obtener_coeficiente(i, sub))
+            coeficientes[i] =self.obtener_coeficiente(i, sub)
             i += 1
+        #print('EVALUACION')
+        #print(coeficientes)
         for r in self.restriciones:
             evaluacion = (r['valores'][0] * coeficientes[0]) + (r['valores'][1] * coeficientes[1])
             evaluacion += (r['valores'][2] * coeficientes[2]) + (r['valores'][3] * coeficientes[3])

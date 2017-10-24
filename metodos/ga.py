@@ -11,7 +11,7 @@ from poblacion import Poblacion
 class GeneticAlgorithm:
     def __init__(self, elitismo):
         self.p_cruce = 0.7
-        self.p_mutacion = 0
+        self.p_mutacion = 0.01
         self.elitismo = elitismo
         self.calc = None
 

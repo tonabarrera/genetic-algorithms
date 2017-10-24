@@ -22,9 +22,9 @@ class Genotipo:
         """Generamos cada parte del genotipo, validamos que cumpla las restricciones
         y lo concatenamos con el resto del genotipo"""
         # En lugar de validar uno por uno, generar toda y despues validar toda la cadena
-        formato = '0' + str(self.calc.longitud) + 'b'
+        formato = '0' + str(self.longitud) + 'b'
         substring = format(random.getrandbits(self.calc.longitud), formato)
-
+        #print(substring + ' - '+formato)
         while not self.calc.validar_cadena(substring):
             substring = format(random.getrandbits(self.calc.longitud), formato)
 
