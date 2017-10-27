@@ -7,18 +7,19 @@ from poblacion import Poblacion
 
 def iniciar():
     calcular = CalcFitness()
-    calcular.precision = 10
+    calcular.precision = 3
     # Los coeficientes de z
-    calcular.z = [.1, .07]
     calcular.get_limites()
     calcular.get_mj()
-    poblacion = Poblacion(6, True, calcular)
+    poblacion = Poblacion(15, True, calcular)
     algorithm = GeneticAlgorithm(True)
-    print(poblacion)
-
-    for i in range(100):
+    i = 0
+    for i in range(10000):
+        print('Poblacion: ' + str(i+1))
+        print(poblacion)
         poblacion = algorithm.get_next_generation(poblacion)
 
+    print('Poblacion: ' + str(i + 1))
     print(poblacion)
 
 

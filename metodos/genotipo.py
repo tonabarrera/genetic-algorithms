@@ -15,7 +15,8 @@ class Genotipo:
         return str(self)
 
     def __str__(self):
-        return str(self.fitness)
+        representacion = self.genotipo_a_fenotipo() + ' z=' + str(self.fitness) + '\n'
+        return representacion
         # return self.genes
 
     def generar_genotipo(self):

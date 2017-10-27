@@ -51,15 +51,16 @@ class GeneticAlgorithm:
     # Validar que cumpla las condiciones
     def mutar(self, genotype):
         """mutate over all genes"""
-        for i in range(genotype.longitud):
+        for i in range(self.calc.longitud):
             p = random.random()
             if p <= self.p_mutacion:
+                i = random.randrange(0, self.calc.longitud)
                 if genotype.genes[i] == '0':
                     genotype.set_gen(i, '1')
                 else:
                     genotype.set_gen(i, '0')
-        if not self.calc.validar_cadena(genotype.genes):
-            genotype.generar_genotipo()
+            if not self.calc.validar_cadena(genotype.genes):
+                genotype.generar_genotipo()
 
     # Validar que cumpla las condiciones
     def cruzar(self, genotype1, genotype2):

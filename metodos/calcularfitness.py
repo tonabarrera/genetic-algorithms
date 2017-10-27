@@ -11,8 +11,13 @@ class CalcFitness:
               'MAYOR_IGUAL': 4
               }
 
+    NO_NEGATIVIDAD = [{'variables': [1, 0, 0, 0], 'limite': 0, 'signo': 4},
+                      {'variables': [0, 1, 0, 0], 'limite': 0, 'signo': 4},
+                      {'variables': [0, 0, 1, 0], 'limite': 0, 'signo': 4},
+                      {'variables': [0, 0, 0, 1], 'limite': 0, 'signo': 4}, ]
+
     def __init__(self):
-        self.z = list()  # Coeficientos de la funcion objetivo
+        self.z = [-1, -1, 2, -1]  # Coeficientos de la funcion objetivo
         self.mj = list()  # Longitud de las subcadenas
         self.longitud = 0  # Longitud total de la cadena
         self.aj = [0, 0, 0, 0]  # Limite inferior
@@ -21,15 +26,16 @@ class CalcFitness:
         self.productos = list()  # Lista que guardara los valores de (bj-aj)/(2**mj-1)
         self.etiquetas = ['A', 'B', 'C', 'D']
         # Restricciones
-        self.restriciones = [{'variables': [1, 1, 0, 0], 'limite':500, 'signo': 3},
-                             {'variables': [1, 0, 0, 0], 'limite':300, 'signo': 3},
-                             {'variables': [0, 1, 0, 0], 'limite':100, 'signo': 4},
-                             {'variables': [-1, 1, 0, 0], 'limite': 0, 'signo': 3}]  # Lista de restricciones
+        self.restricciones = CalcFitness.NO_NEGATIVIDAD
+        self.restricciones += [{'variables': [1, 0, 1, 0], 'limite': 50, 'signo': 3},
+                               {'variables': [0, 1, 0, 1], 'limite': 75, 'signo': 3},
+                               {'variables': [1, 0, 0, 0], 'limite': 10, 'signo': 4},
+                               {'variables': [0, 1, 0, 1], 'limite': 100, 'signo': 3},]  # Lista de restricciones
 
     def get_limites(self):
         for i in range(len(self.z)):
             aux = 0
-            for r in self.restriciones:
+            for r in self.restricciones:
                 if r['variables'][i] != 0:
                     if r['signo'] == CalcFitness.SIGNOS['MAYOR'] or r['signo'] == CalcFitness.SIGNOS['MAYOR_IGUAL']:
                         aux = -r['limite'] / r['variables'][i]
@@ -41,7 +47,6 @@ class CalcFitness:
 
                 if aux < self.aj[i]:
                     self.aj[i] = aux
-
 
     def get_mj(self):
         """Obtencion de la longitud de las cadenas"""
@@ -94,7 +99,7 @@ class CalcFitness:
             i += 1
         # print('EVALUACION')
         # print(coeficientes)
-        for r in self.restriciones:
+        for r in self.restricciones:
             evaluacion = (r['variables'][0] * coeficientes[0]) + (r['variables'][1] * coeficientes[1])
             evaluacion += (r['variables'][2] * coeficientes[2]) + (r['variables'][3] * coeficientes[3])
             if r['signo'] == CalcFitness.SIGNOS['IGUAL']:

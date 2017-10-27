@@ -13,6 +13,7 @@ class Poblacion:
             self.crear_poblacion()
 
     def __str__(self):
+
         return self.genotipos.__str__()
 
     def crear_poblacion(self):
