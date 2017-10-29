@@ -11,7 +11,7 @@ from poblacion import Poblacion
 class GeneticAlgorithm:
     def __init__(self, elitismo):
         self.p_cruce = 0.7
-        self.p_mutacion = 0.01
+        self.p_mutacion = 0.05
         self.elitismo = elitismo
         self.calc = None
 
@@ -51,14 +51,13 @@ class GeneticAlgorithm:
     # Validar que cumpla las condiciones
     def mutar(self, genotype):
         """mutate over all genes"""
-        for i in range(self.calc.longitud):
-            p = random.random()
-            if p <= self.p_mutacion:
-                i = random.randrange(0, self.calc.longitud)
-                if genotype.genes[i] == '0':
-                    genotype.set_gen(i, '1')
-                else:
-                    genotype.set_gen(i, '0')
+        p = random.random()
+        if p <= self.p_mutacion:
+            i = random.randrange(0, self.calc.longitud)
+            if genotype.genes[i] == '0':
+                genotype.set_gen(i, '1')
+            else:
+                genotype.set_gen(i, '0')
             if not self.calc.validar_cadena(genotype.genes):
                 genotype.generar_genotipo()
 
@@ -78,16 +77,26 @@ class GeneticAlgorithm:
     @staticmethod
     def roulette_selection(population):
         """Algoritmo de seleccion de la siguiete poblacion"""
-        sum_fit = population.get_fitness_total()
+        sum_fit = 0
+        min_aux = 0
+        for i in population.genotipos:
+            a = i.get_fitness()
+            if min_aux > a:
+                min_aux = a
+            sum_fit += a
+
+        if min_aux < 0:
+            sum_fit -= 2*min_aux * population.tam_poblacion
+
         sum_proba = 0
         proba_table = list()
         nueva_poblacion = list()
-
         for genotype in population.genotipos:
-            proba = round(genotype.fitness / sum_fit, 2)
+            proba = round((genotype.fitness-2*min_aux) / sum_fit, 3)
             sum_proba += proba
             proba_table.append(sum_proba)
         i = 0
+
         while i < population.tam_poblacion:
             number = random.random()
             for j in range(len(proba_table)):

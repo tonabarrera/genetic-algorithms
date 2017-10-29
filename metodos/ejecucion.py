@@ -7,14 +7,15 @@ from poblacion import Poblacion
 
 def iniciar():
     calcular = CalcFitness()
-    calcular.precision = 3
+    calcular.precision = 0
     # Los coeficientes de z
     calcular.get_limites()
     calcular.get_mj()
-    poblacion = Poblacion(15, True, calcular)
+    poblacion = Poblacion(10, True, calcular)
     algorithm = GeneticAlgorithm(True)
     i = 0
-    for i in range(10000):
+    print(calcular.longitud)
+    for i in range(50):
         print('Poblacion: ' + str(i+1))
         print(poblacion)
         poblacion = algorithm.get_next_generation(poblacion)
