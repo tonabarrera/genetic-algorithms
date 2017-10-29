@@ -14,12 +14,11 @@ class CalcFitness:
     NO_NEGATIVIDAD = [{'variables': [1, 0, 0, 0], 'limite': 0, 'signo': 4},
                       {'variables': [0, 1, 0, 0], 'limite': 0, 'signo': 4},
                       {'variables': [0, 0, 1, 0], 'limite': 0, 'signo': 4},
-                      {'variables': [0, 0, 0, 1], 'limite': 0, 'signo': 4}, ]
+                      {'variables': [0, 0, 0, 1], 'limite': 0, 'signo': 4},]
 
     def __init__(self):
-        self.z = [-1, 1, -1, -1]  # Coeficientos de la funcion objetivo
+        self.z = [-1, -1, 2, -1]   # Coeficientos de la funcion objetivo
         self.mj = list()  # Longitud de las subcadenas
-        self.minimizar = False
         self.longitud = 0  # Longitud total de la cadena
         self.aj = [0, 0, 0, 0]  # Limite inferior
         self.bj = [0, 0, 0, 0]  # Limite superior
@@ -28,9 +27,10 @@ class CalcFitness:
         self.etiquetas = ['A', 'B', 'C', 'D']
         # Restricciones
         self.restricciones = CalcFitness.NO_NEGATIVIDAD
-        self.restricciones += [{'variables': [1, 1, 0, 0], 'limite': 30, 'signo': 3},
-                               {'variables': [1, 0, 0, 1], 'limite': 40, 'signo': 3},
-                               {'variables': [1, 1, 1, 1], 'limite': 100, 'signo': 0},]  # Lista de restricciones
+        self.restricciones += [{'variables': [1, 0, 1, 0], 'limite': 50, 'signo': 3},
+                       {'variables': [0, 1, 0, 1], 'limite': 75, 'signo': 3},
+                       {'variables': [1, 0, 0, 0], 'limite': 10, 'signo': 4},
+                       {'variables': [0, 1, 0, 1], 'limite': 100, 'signo': 3},]
 
     def get_limites(self):
         for i in range(len(self.z)):
@@ -38,7 +38,7 @@ class CalcFitness:
             for r in self.restricciones:
                 if r['variables'][i] != 0:
                     if r['signo'] == CalcFitness.SIGNOS['MAYOR'] or r['signo'] == CalcFitness.SIGNOS['MAYOR_IGUAL']:
-                        aux = -r['limite'] / r['variables'][i]
+                        aux = -abs(r['limite'] / r['variables'][i])
                     else:
                         aux = r['limite'] / r['variables'][i]
 

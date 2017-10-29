@@ -5,7 +5,8 @@ self.z = [1, 1]  # Coeficientos de la funcion objetivo
 self.restricciones += [{'variables': [2, 1, 0, 0], 'limite': 20, 'signo': 3},
                        {'variables': [1, 1, 0, 0], 'limite': 10, 'signo': 4}, ]  # Lista de restricciones
 # Caso 2
-65 y 10
+65 y 0
+No poner una de no negatividad
 self.z = [1, 1, 1]
 self.restricciones += [{'variables': [1, 0, 1, 0], 'limite': 50, 'signo': 3},
                                {'variables': [2, 1, 0, 0], 'limite': 75, 'signo': 3},
